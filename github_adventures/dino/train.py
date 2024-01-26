@@ -11,7 +11,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision.datasets import ImageFolder
 
 from evaluation import compute_embedding, compute_knn
-from utils import DataAugmentation, Head, Loss, MultiCropWrapper, clip_gradients
+from utils_in import DataAugmentation, Head, Loss, MultiCropWrapper, clip_gradients
 
 
 def main():
