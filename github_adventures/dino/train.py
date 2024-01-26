@@ -36,14 +36,16 @@ def main():
     parser.add_argument("--student-temp", type=float, default=0.1)
     parser.add_argument("--pretrained", action="store_true")
     parser.add_argument("-w", "--weight-decay", type=float, default=0.4)
-
+    parser.add_argument("--pathtrain", type=str, default=None)
+    parser.add_argument("--pathtest", type=str, default=None)
+    
     args = parser.parse_args()
     print(vars(args))
     # Parameters
     vit_name, dim = "vit_deit_small_patch16_224", 384
-    path_dataset_train = pathlib.Path("data/imagenette2-320/train")
-    path_dataset_val = pathlib.Path("data/imagenette2-320/val")
-    path_labels = pathlib.Path("data/imagenette_labels.json")
+    path_dataset_train = pathlib.Path(args.pathtrain)
+    path_dataset_val = pathlib.Path(args.pathtest)
+    # path_labels = pathlib.Path("data/imagenette_labels.json")
 
     logging_path = pathlib.Path(args.tensorboard_dir)
     device = torch.device(args.device)
@@ -51,8 +53,8 @@ def main():
     n_workers = 4
 
     # Data related
-    with path_labels.open("r") as f:
-        label_mapping = json.load(f)
+    # with path_labels.open("r") as f:
+    #     label_mapping = json.load(f)
 
     transform_aug = DataAugmentation(size=224, n_local_crops=args.n_crops - 2)
     transform_plain = transforms.Compose(
@@ -152,13 +154,13 @@ def main():
                     student.backbone,
                     data_loader_val_plain_subset,
                 )
-                writer.add_embedding(
-                    embs,
-                    metadata=[label_mapping[l] for l in labels_],
-                    label_img=imgs,
-                    global_step=n_steps,
-                    tag="embeddings",
-                )
+                # writer.add_embedding(
+                #     embs,
+                #     metadata=[label_mapping[l] for l in labels_],
+                #     label_img=imgs,
+                #     global_step=n_steps,
+                #     tag="embeddings",
+                # )
 
                 # KNN
                 current_acc = compute_knn(
