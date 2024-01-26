@@ -117,6 +117,10 @@ def main():
         ),
     )
     teacher = MultiCropWrapper(teacher_vit, Head(dim, args.out_dim))
+    
+    vits16 = torch.hub.load('facebookresearch/dino:main', 'dino_vits16')
+    student_vit.load_state_dict(vits16.state_dict(), strict=False)
+    
     student, teacher = student.to(device), teacher.to(device)
 
     teacher.load_state_dict(student.state_dict())
